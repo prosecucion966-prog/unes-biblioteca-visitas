@@ -26,3 +26,9 @@ footer { border-top: 1px solid #e2e8f0; margin-top: 38px; padding-top: 20px; col
 .unes-logo{display:block;width:auto;height:auto;max-width:min(100%,260px);max-height:86px;object-fit:contain}
 .brand-with-logo span{color:#64748b;font-weight:600;letter-spacing:0;margin-left:0;font-size:1rem}
 @media(max-width:600px){.unes-logo{max-width:210px;max-height:72px}.brand-with-logo{align-items:flex-start;flex-direction:column;gap:8px}}
+
+.report-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.report-filters label{display:block;font-weight:700;font-size:.92rem;margin-bottom:8px}
+.report-filters input,.report-filters select{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:12px;font:inherit;background:#fff;color:#172033}
+table tfoot th{background:#f0fdfa}
+@media print{body{background:#fff}.dashboard{max-width:none;padding:0}.dashboard-header .home-actions,.dashboard-header form,.report-filters,.home-actions,.secondary-button,.primary-button{display:none!important}.table-panel,.stat-card{break-inside:avoid;box-shadow:none}.table-panel{border:1px solid #ddd}}
