@@ -45,7 +45,7 @@ const NUCLEOS=[
   "DELTA AMACURO"
 ];
 const AREAS=["Sala de Consulta Digital","Sala de Lectura","Revisión Bibliográfica","Consulta en Recepción"];
-const TIPOS=["Estudiante PNF","Estudiante PNFA","Estudiante PFG","Docente","Personal Administrativo","Personal Obrero","Visita Institucional","Oficial de Planta"];
+const TIPOS=["Estudiante PNF","Estudiante PNFA","Estudiante PFG","Docente","Personal Administrativo","Personal Obrero","Visita Institucional","Oficial de Planta","Otro"];
 const PNF_POLICIAL=["PNF en Policial","PNF en Investigación Penal","PNF en Ciencias del Fuego y Seguridad contra Incendios","PNF en Protección Civil y Administración de Desastres","PNF en Servicio Penitenciario","PNF en Prevención y Seguridad Ciudadana","PNF en Emergencia Prehospitalaria"];
 const ACTIVIDADES=["Consulta académica","Taller","Conferencia","Conversatorio","Jornada de lectura","Clase","Reunión"];
 export default function NuevaVisitaPage(){
