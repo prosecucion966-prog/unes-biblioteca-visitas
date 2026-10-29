@@ -3,6 +3,47 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../lib/supabase/client";
+const NUCLEOS=[
+  "LA GUAIRA",
+  "CEFE CARMEN DE URIA",
+  "CARACAS",
+  "JUNQUITO",
+  "HELICOIDE",
+  "SAN PEDRO- COMUNAL",
+  "SENAMECF",
+  "EL LLANITO",
+  "CAFETAL",
+  "EJE ALTOS MIRANDINOS",
+  "EJE VALLES DEL TUY",
+  "EJE BARLOVENTO",
+  "EJE METROPOLITANO",
+  "EJE GUARENAS - GUATIRE",
+  "ARAGUA",
+  "CARABOBO",
+  "YARACUY",
+  "FALCÓN",
+  "LARA",
+  "EJE LA GUAJIRA",
+  "ZULIA",
+  "APURE",
+  "BARINAS",
+  "COJEDES TINAQUILLO",
+  "COJEDES",
+  "GUÁRICO",
+  "PORTUGUESA",
+  "MÉRIDA",
+  "TÁCHIRA",
+  "TRUJILLO",
+  "ANZOÁTEGUI",
+  "MONAGAS",
+  "NUEVA ESPARTA",
+  "CARUPANO",
+  "SUCRE",
+  "AMAZONAS",
+  "BOLÍVAR - PTO. ORDAZ",
+  "BOLÍVAR - ANGOSTURA",
+  "DELTA AMACURO"
+];
 const AREAS=["Sala de Consulta Digital","Sala de Lectura","Revisión Bibliográfica","Consulta en Recepción"];
 const TIPOS=["Estudiante PNF","Estudiante PNFA","Estudiante PFG","Docente","Personal Administrativo","Personal Obrero","Visita Institucional","Oficial de Planta"];
 const ACTIVIDADES=["Consulta académica","Taller","Conferencia","Conversatorio","Jornada de lectura","Clase","Reunión"];
@@ -21,7 +62,7 @@ export default function NuevaVisitaPage(){
  <label>Tipo de visitante *</label><select name="tipo_visitante" required defaultValue=""><option value="" disabled>Seleccione…</option>{TIPOS.map(x=><option key={x}>{x}</option>)}</select>
  <label>Categoría de estudio</label><input name="categoria_estudio"/>
  <label>Programa / detalle</label><input name="programa_detalle"/>
- <label>Núcleo</label><input name="nucleo"/>
+ <label>Núcleo</label><select name="nucleo" defaultValue=""><option value="">Seleccione un núcleo…</option>{NUCLEOS.map(x=><option key={x} value={x}>{x}</option>)}</select>
  <label>Teléfono</label><input name="telefono" type="tel"/>
  <label>Correo</label><input name="correo" type="email"/>
  <label>Área de consulta *</label><select name="area_consulta" required defaultValue=""><option value="" disabled>Seleccione…</option>{AREAS.map(x=><option key={x}>{x}</option>)}</select>
