@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 
 const NUCLEOS = [
   "LA GUAIRA","CEFE CARMEN DE URIA","CARACAS","JUNQUITO","HELICOIDE","SAN PEDRO- COMUNAL","SENAMECF","EL LLANITO","CAFETAL","EJE ALTOS MIRANDINOS","EJE VALLES DEL TUY","EJE BARLOVENTO","EJE METROPOLITANO","EJE GUARENAS - GUATIRE","ARAGUA","CARABOBO","YARACUY","FALCÓN","LARA","EJE LA GUAJIRA","ZULIA","APURE","BARINAS","COJEDES TINAQUILLO","COJEDES","GUÁRICO","PORTUGUESA","MÉRIDA","TÁCHIRA","TRUJILLO","ANZOÁTEGUI","MONAGAS","NUEVA ESPARTA","CARUPANO","SUCRE","AMAZONAS","BOLÍVAR - PTO. ORDAZ","BOLÍVAR - ANGOSTURA","DELTA AMACURO"
-];
+].sort((a, b) => a.localeCompare(b, "es"));
 type Usuario = { id:string; full_name:string; email:string; role:string; active:boolean; nucleo:string|null };
 
 export default function UsuariosPage() {
