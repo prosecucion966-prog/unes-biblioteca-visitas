@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../lib/supabase/client";
@@ -54,7 +54,7 @@ const PNFA_AREA_FIJA="Seguridad Ciudadana";
 const OPCIONES_PFG=["Derecho","Criminología","Ingeniería Estructural en Seguridad y Protección Contra Incendios"];
 const ACTIVIDADES=["Consulta académica","Taller","Conferencia","Conversatorio","Jornada de lectura","Clase","Reunión"];
 export default function NuevaVisitaPage(){
- const router=useRouter(); const [error,setError]=useState(""); const [saving,setSaving]=useState(false);
+ const router=useRouter(); const [error,setError]=useState(""); const [saving,setSaving]=useState(false); const formRef=useRef<HTMLFormElement>(null); const [buscandoCedula,setBuscandoCedula]=useState(false); const [mensajeCedula,setMensajeCedula]=useState("");
  const [profile,setProfile]=useState<{role:string;nucleo:string|null}|null>(null);
  const [profileLoading,setProfileLoading]=useState(true);
  const [tipoVisitante,setTipoVisitante]=useState("");
@@ -63,6 +63,37 @@ export default function NuevaVisitaPage(){
  const [programaPFG,setProgramaPFG]=useState("");
  const [dependenciaAdministrativa,setDependenciaAdministrativa]=useState("");
  useEffect(()=>{let cancelled=false;(async()=>{try{const supabase=createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Inicia sesión nuevamente.");const {data,error}=await supabase.from("profiles").select("role,nucleo,active").eq("id",user.id).single();if(error)throw error;if(!data?.active)throw new Error("Tu cuenta no está activa.");if(!cancelled)setProfile({role:data.role,nucleo:data.nucleo});}catch(e){if(!cancelled)setError(e instanceof Error?e.message:"No se pudo consultar tu núcleo asignado.");}finally{if(!cancelled)setProfileLoading(false);}})();return()=>{cancelled=true;}},[]);
+ async function buscarVisitante(cedulaRaw:string){
+  const cedula=cedulaRaw.trim();
+  setMensajeCedula(""); 
+  if(!cedula) return;
+  setBuscandoCedula(true);
+  try{
+   const supabase=createClient();
+   const {data,error:queryError}=await supabase.from("visitas").select("cedula,apellidos,nombres,genero,tipo_visitante,categoria_estudio,programa_detalle,nucleo,dependencia_administrativa,telefono,correo,procedencia").eq("cedula",cedula).order("created_at",{ascending:false}).limit(1).maybeSingle();
+   if(queryError) throw queryError;
+   if(!data){setMensajeCedula("No hay registros previos para esta cédula. Completa los datos del visitante.");return;}
+   const form=formRef.current;
+   if(!form) return;
+   const setField=(name:string,value:string|null|undefined)=>{const el=form.elements.namedItem(name);if(el instanceof HTMLInputElement||el instanceof HTMLTextAreaElement||el instanceof HTMLSelectElement) el.value=value||"";};
+   setField("apellidos",data.apellidos);setField("nombres",data.nombres);setField("genero",data.genero);setField("telefono",data.telefono);setField("correo",data.correo);setField("procedencia",data.procedencia);
+   setTipoVisitante(data.tipo_visitante||"");
+   setField("tipo_visitante",data.tipo_visitante);
+   setField("categoria_estudio",data.categoria_estudio);
+   setField("programa_detalle",data.programa_detalle);
+   setDependenciaAdministrativa(data.dependencia_administrativa||"");
+   setField("dependencia_administrativa",data.dependencia_administrativa);
+   if(data.tipo_visitante==="Estudiante PNF") setProgramaPNF(data.programa_detalle||"");
+   if(data.tipo_visitante==="Estudiante PFG") setProgramaPFG(data.programa_detalle||"");
+   if(data.tipo_visitante==="Estudiante PNFA"){
+    const nivel=PNFA_NIVELES.find(n=>data.categoria_estudio?.startsWith(n))||"";
+    setNivelPNFA(nivel);
+   }
+   if(profile?.role!=="operator") setField("nucleo",data.nucleo);
+   setMensajeCedula("Visitante habitual encontrado. Se cargaron sus datos de la visita anterior; verifica y actualiza lo necesario.");
+  }catch(e){setMensajeCedula(e instanceof Error?e.message:"No se pudo buscar la cédula.");}
+  finally{setBuscandoCedula(false);}
+ }
  async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setError("");setSaving(true);const form=new FormData(e.currentTarget);
  try {const supabase=createClient();const {data:{user},error:authError}=await supabase.auth.getUser();if(authError||!user)throw new Error("Tu sesión venció. Inicia sesión nuevamente.");
  const {error:insertError}=await supabase.from("visitas").insert({cedula:String(form.get("cedula")).trim(),apellidos:String(form.get("apellidos")).trim(),nombres:String(form.get("nombres")).trim(),genero:String(form.get("genero")||""),tipo_visitante:String(form.get("tipo_visitante")),categoria_estudio:tipoVisitante==="Estudiante PNFA" ? `${nivelPNFA} - ${PNFA_AREA_FIJA}` : String(form.get("categoria_estudio")||""),programa_detalle:tipoVisitante==="Estudiante PNFA" ? (PNFA_POSTGRADOS[nivelPNFA]||"") : tipoVisitante==="Estudiante PFG" ? programaPFG : tipoVisitante==="Estudiante PNF" ? programaPNF : String(form.get("programa_detalle")||""),nucleo:profile?.role==="operator" ? (profile.nucleo||"") : String(form.get("nucleo")||""),dependencia_administrativa:tipoVisitante==="Personal Administrativo" ? dependenciaAdministrativa : "",telefono:String(form.get("telefono")||""),correo:String(form.get("correo")||""),area_consulta:String(form.get("area_consulta")),tipo_actividad:String(form.get("tipo_actividad")||""),numero_maquina:String(form.get("numero_maquina")||""),procedencia:String(form.get("procedencia")||""),atendido_por:String(form.get("atendido_por")||""),material_consultado:String(form.get("material_consultado")||""),created_by:user.id});
