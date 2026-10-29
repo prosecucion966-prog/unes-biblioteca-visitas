@@ -12,6 +12,7 @@ type Visita = {
   tipo_visitante: string | null;
   programa_detalle: string | null;
   area_consulta: string | null;
+  dependencia_administrativa: string | null;
 };
 
 function todayLocal() {
@@ -39,7 +40,7 @@ export default function ReportesPage() {
         const { data: { user }, error: authError } = await supabase.auth.getUser();
         if (authError || !user) throw new Error("Tu sesión venció. Inicia sesión nuevamente.");
         let query = supabase.from("visitas")
-          .select("id,cedula,fecha_visita,nucleo,tipo_visitante,programa_detalle,area_consulta")
+          .select("id,cedula,fecha_visita,nucleo,tipo_visitante,programa_detalle,area_consulta,dependencia_administrativa")
           .gte("fecha_visita", desde)
           .lte("fecha_visita", hasta)
           .order("fecha_visita", { ascending: false })
@@ -68,6 +69,11 @@ export default function ReportesPage() {
     visitas.forEach(v => { const key = v.nucleo?.trim() || "Sin núcleo"; map.set(key, (map.get(key) ?? 0) + 1); });
     return Array.from(map, ([nombre, cantidad]) => ({ nombre, cantidad })).sort((a,b) => b.cantidad-a.cantidad || a.nombre.localeCompare(b.nombre, "es"));
   }, [visitas]);
+  const porDependencia = useMemo(() => {
+    const map = new Map<string, number>();
+    visitas.filter(v => v.tipo_visitante === "Personal Administrativo").forEach(v => { const key = v.dependencia_administrativa?.trim() || "Sin dependencia"; map.set(key, (map.get(key) ?? 0) + 1); });
+    return Array.from(map, ([nombre, cantidad]) => ({ nombre, cantidad })).sort((a,b) => b.cantidad-a.cantidad || a.nombre.localeCompare(b.nombre, "es"));
+  }, [visitas]);
   const porTipo = useMemo(() => {
     const map = new Map<string, number>();
     visitas.forEach(v => { const key = v.tipo_visitante?.trim() || "Sin tipo"; map.set(key, (map.get(key) ?? 0) + 1); });
@@ -75,7 +81,7 @@ export default function ReportesPage() {
   }, [visitas]);
 
   function exportarCSV() {
-    const rows = [["Fecha desde", desde], ["Fecha hasta", hasta], ["Total de visitas", String(visitas.length)], [], ["Núcleo", "Cantidad de visitas"], ...porNucleo.map(x => [x.nombre, String(x.cantidad)]), [], ["Tipo de visitante", "Cantidad"], ...porTipo.map(x => [x.nombre, String(x.cantidad)])];
+    const rows = [["Fecha desde", desde], ["Fecha hasta", hasta], ["Total de visitas", String(visitas.length)], [], ["Núcleo", "Cantidad de visitas"], ...porNucleo.map(x => [x.nombre, String(x.cantidad)]), [], ["Tipo de visitante", "Cantidad"], ...porTipo.map(x => [x.nombre, String(x.cantidad)]), [], ["Dependencia administrativa", "Cantidad"], ...porDependencia.map(x => [x.nombre, String(x.cantidad)])];
     const csv = "\uFEFF" + rows.map(row => row.map(v => '"' + String(v ?? "").replace(/"/g, '""') + '"').join(";")).join("\r\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
     const a = document.createElement("a"); a.href = url; a.download = `reporte-visitas-${desde}-a-${hasta}.csv`; a.click(); URL.revokeObjectURL(url);
@@ -97,6 +103,7 @@ export default function ReportesPage() {
     {error && <p className="error-message" role="alert">{error}</p>}
     <section className="stats"><article className="stat-card"><span>Total de visitas en el período</span><strong>{loading ? "…" : visitas.length}</strong></article><article className="stat-card"><span>Núcleos con visitas</span><strong>{loading ? "…" : porNucleo.filter(x=>x.nombre!=="Sin núcleo").length}</strong></article></section>
     <section className="table-panel" style={{marginBottom:20}}><h2>Cantidad de visitas por núcleo</h2>{loading?<p className="muted">Generando reporte…</p>:porNucleo.length?<div className="table-scroll"><table><thead><tr><th>Núcleo</th><th>Cantidad de visitas</th><th>Porcentaje</th></tr></thead><tbody>{porNucleo.map(x=><tr key={x.nombre}><td>{x.nombre}</td><td>{x.cantidad}</td><td>{visitas.length ? (x.cantidad*100/visitas.length).toFixed(1)+"%" : "0%"}</td></tr>)}</tbody><tfoot><tr><th>Total</th><th>{visitas.length}</th><th>{visitas.length ? "100%" : "0%"}</th></tr></tfoot></table></div>:<p className="muted">No hay visitas para los filtros seleccionados.</p>}</section>
+    <section className="table-panel" style={{marginBottom:20}}><h2>Visitas por dependencia administrativa</h2>{loading?<p className="muted">Generando reporte…</p>:porDependencia.length?<div className="table-scroll"><table><thead><tr><th>Dependencia administrativa</th><th>Cantidad</th></tr></thead><tbody>{porDependencia.map(x=><tr key={x.nombre}><td>{x.nombre}</td><td>{x.cantidad}</td></tr>)}</tbody></table></div>:<p className="muted">No hay visitas de personal administrativo para los filtros seleccionados.</p>}</section>
     <section className="table-panel"><h2>Cantidad por tipo de visitante</h2>{loading?<p className="muted">Generando reporte…</p>:porTipo.length?<div className="table-scroll"><table><thead><tr><th>Tipo de visitante</th><th>Cantidad</th></tr></thead><tbody>{porTipo.map(x=><tr key={x.nombre}><td>{x.nombre}</td><td>{x.cantidad}</td></tr>)}</tbody></table></div>:<p className="muted">No hay datos para mostrar.</p>}<p className="small-note">Nota: el reporte carga hasta 5.000 registros por consulta. Para períodos con más visitas se recomienda paginación o un reporte agregado en la base de datos.</p></section>
   </main>;
 }
