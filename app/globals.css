@@ -102,3 +102,44 @@ table{min-width:600px}
  table{min-width:0;font-size:10pt}
  th,td{white-space:normal}
 }
+
+
+/* Identidad visual UNES: azul institucional, blanco y dorado */
+:root{--unes-navy:#062a56;--unes-blue:#0b3f78;--unes-blue-bright:#145ca8;--unes-gold:#f5c431;--unes-gold-deep:#dba900;--unes-ice:#f2f7fc;--unes-ink:#102a4c}
+body{color:var(--unes-ink);background:radial-gradient(ellipse at 88% 8%,rgba(245,196,49,.13),transparent 27rem),radial-gradient(ellipse at 5% 28%,rgba(20,92,168,.12),transparent 30rem),linear-gradient(135deg,#f8fbff 0%,#edf4fb 52%,#f9fbff 100%);background-attachment:fixed}
+.page{position:relative;isolation:isolate}
+.page:before{content:"";position:fixed;z-index:-1;top:-170px;right:-110px;width:430px;height:430px;border:38px solid rgba(245,196,49,.15);border-radius:50%;pointer-events:none}
+.page:after{content:"";position:fixed;z-index:-1;bottom:-220px;left:-150px;width:440px;height:440px;border:54px solid rgba(6,42,86,.06);border-radius:50%;pointer-events:none}
+.panel,.stat-card,.action-card,.table-panel{border-color:rgba(11,63,120,.12);box-shadow:0 14px 40px rgba(6,42,86,.07)}
+.panel{border-top:4px solid var(--unes-gold);backdrop-filter:blur(8px)}
+.brand,.dashboard-header .brand{color:var(--unes-navy)}
+.brand span,.brand-with-logo span{color:#55708f}
+.eyebrow{color:var(--unes-blue);position:relative}
+.eyebrow:before{content:"";display:inline-block;width:25px;height:4px;background:var(--unes-gold);border-radius:5px;margin:0 9px 3px 0}
+h1,.stat-card strong,.action-card strong,.table-panel h2{color:var(--unes-navy)}
+.primary-button{color:var(--unes-navy);background:linear-gradient(115deg,#ffd84f 0%,var(--unes-gold) 65%,#e9b91b 100%);box-shadow:0 5px 14px rgba(219,169,0,.18);transition:transform .18s ease,box-shadow .18s ease,filter .18s ease}
+.primary-button:hover{background:linear-gradient(115deg,#ffe16e,var(--unes-gold));transform:translateY(-1px);box-shadow:0 8px 20px rgba(219,169,0,.25)}
+.primary-button:disabled{transform:none;box-shadow:none}
+.secondary-button{background:#e8eff8;color:var(--unes-navy);border:1px solid #d4e1f0}
+.secondary-button:hover{background:#dce8f6}
+.secondary-link,.back-link{color:var(--unes-blue)}
+.form input,.form select,.form textarea,.report-filters input,.report-filters select{border-color:#cbd9e9;background:rgba(255,255,255,.96);transition:border-color .18s ease,box-shadow .18s ease}
+.form input:focus,.form select:focus,.form textarea:focus,.report-filters input:focus,.report-filters select:focus{outline:none;border-color:var(--unes-blue-bright);box-shadow:0 0 0 4px rgba(20,92,168,.13)}
+.dashboard-header{border-bottom:2px solid rgba(245,196,49,.8)}
+.welcome{position:relative}
+.welcome:after{content:"";display:block;width:82px;height:5px;border-radius:6px;background:var(--unes-gold);margin-top:14px}
+.stat-card{border-top:3px solid var(--unes-gold);transition:transform .2s ease,box-shadow .2s ease}
+.stat-card:hover,.action-card:hover{transform:translateY(-3px);box-shadow:0 18px 35px rgba(6,42,86,.11)}
+.action-card{position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.action-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--unes-gold)}
+.action-card:hover{border-color:var(--unes-gold)}
+th{color:var(--unes-navy);background:#eaf1f9}
+th,td{border-bottom-color:#dce6f1}
+table tbody tr:hover{background:#f5f9fe}
+table tfoot th{background:#fff5cf}
+.notice{border-left-color:var(--unes-gold);background:#fff9e5}
+.error-message{border-left:4px solid #c2413b}
+.success-message{border-left:4px solid #21835b}
+footer{border-top-color:#d6e2ef}
+@media(hover:none){.stat-card:hover,.action-card:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.primary-button,.stat-card,.action-card{transition:none}}
