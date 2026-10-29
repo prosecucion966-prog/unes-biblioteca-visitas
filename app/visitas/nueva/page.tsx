@@ -45,7 +45,8 @@ const NUCLEOS=[
   "DELTA AMACURO"
 ];
 const AREAS=["Sala de Consulta Digital","Sala de Lectura","Revisión Bibliográfica","Consulta en Recepción"];
-const TIPOS=["Estudiante PNF","Estudiante PNFA","Estudiante PFG","Docente","Personal Administrativo","Personal Obrero","Visita Institucional","Oficial de Planta"];
+const TIPOS=["Estudiante de PNF en Policial","Estudiante PNFA","Estudiante PFG","Docente","Personal Administrativo","Personal Obrero","Visita Institucional","Oficial de Planta"];
+const PNF_POLICIAL=["PNF en Investigación Penal","PNF en Ciencias del Fuego y Seguridad contra Incendios","PNF en Protección Civil y Administración de Desastres","PNF en Servicio Penitenciario","PNF en Prevención y Seguridad Ciudadana","PNF en Emergencia Prehospitalaria"];
 const ACTIVIDADES=["Consulta académica","Taller","Conferencia","Conversatorio","Jornada de lectura","Clase","Reunión"];
 export default function NuevaVisitaPage(){
  const router=useRouter(); const [error,setError]=useState(""); const [saving,setSaving]=useState(false);
@@ -64,7 +65,7 @@ export default function NuevaVisitaPage(){
  <label>Género</label><select name="genero" defaultValue=""><option value="">Seleccione…</option><option>Femenino</option><option>Masculino</option><option>No indica</option></select>
  <label>Tipo de visitante *</label><select name="tipo_visitante" required defaultValue=""><option value="" disabled>Seleccione…</option>{TIPOS.map(x=><option key={x}>{x}</option>)}</select>
  <label>Categoría de estudio</label><input name="categoria_estudio"/>
- <label>Programa / detalle</label><input name="programa_detalle"/>
+ <label>Programa / detalle</label><select name="programa_detalle" defaultValue=""><option value="">Seleccione un programa…</option>{PNF_POLICIAL.map(x=><option key={x} value={x}>{x}</option>)}<option value="Otro">Otro</option></select>
  <label>Núcleo asignado *</label>{profile?.role==="operator" ? <><input value={profile.nucleo||""} readOnly required aria-readonly="true"/><p className="small-note">Este núcleo está asignado a tu usuario. Para cambiarlo, contacta al administrador.</p></> : <select name="nucleo" defaultValue="" required><option value="">Seleccione un núcleo…</option>{NUCLEOS.map(x=><option key={x} value={x}>{x}</option>)}</select>}
  <label>Teléfono</label><input name="telefono" type="tel"/>
  <label>Correo</label><input name="correo" type="email"/>
