@@ -1,0 +1,10 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { createClient } from "../../lib/supabase/server";
+export default async function VisitasPage(){
+ let supabase;try{supabase=await createClient();}catch{redirect("/login");}
+ const {data:{user}}=await supabase.auth.getUser();if(!user)redirect("/login");
+ const {data:profile}=await supabase.from("profiles").select("active").eq("id",user.id).maybeSingle();if(!profile?.active)redirect("/login");
+ const {data:visitas,error}=await supabase.from("visitas").select("id,cedula,apellidos,nombres,fecha_visita,hora_entrada,hora_salida,area_consulta,tipo_visitante").order("created_at",{ascending:false}).limit(300);
+ return <main className="dashboard"><header className="dashboard-header"><div><div className="brand">UNES <span>Biblioteca Virtual</span></div><p className="muted">Historial de visitas</p></div><div className="home-actions"><Link className="primary-button" href="/visitas/nueva">＋ Registrar visita</Link><Link className="secondary-link" href="/dashboard">Volver al panel</Link></div></header><section className="table-panel"><h1>Historial de visitas</h1><p className="muted">Se muestran las últimas 300 visitas.</p>{error?<p className="error-message">No se pudo consultar el historial. Verifica que ejecutaste supabase/schema.sql en tu proyecto Supabase.</p>:visitas?.length?<div className="table-scroll"><table><thead><tr><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Cédula</th><th>Visitante</th><th>Tipo</th><th>Área</th></tr></thead><tbody>{visitas.map(v=><tr key={v.id}><td>{v.fecha_visita}</td><td>{v.hora_entrada}</td><td>{v.hora_salida??"Pendiente"}</td><td>{v.cedula}</td><td>{v.nombres} {v.apellidos}</td><td>{v.tipo_visitante}</td><td>{v.area_consulta}</td></tr>)}</tbody></table></div>:<p className="muted">No hay visitas registradas todavía.</p>}</section></main>;
+}
