@@ -216,3 +216,8 @@ tr:hover td{background:#f8fbfd}
  .primary-button,.secondary-button{border-radius:11px}
 }
 @media(prefers-reduced-motion:reduce){.primary-button,.stat-card,.action-card{transition:none}.action-card:hover,.primary-button:hover{transform:none}}
+
+.cedula-search-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch}
+.cedula-search-row input{min-width:0}
+.cedula-search-row button{min-width:100px}
+@media(max-width:420px){.cedula-search-row{grid-template-columns:minmax(0,1fr)}.cedula-search-row button{width:100%}}
