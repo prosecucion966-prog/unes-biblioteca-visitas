@@ -16,12 +16,14 @@ create table if not exists public.visitas (
  hora_entrada time not null default (now() at time zone 'America/Caracas')::time,
  hora_salida time, area_consulta text not null, tipo_actividad text not null default '',
  numero_maquina text not null default '', procedencia text not null default '',
+ dependencia_administrativa text not null default '',
  atendido_por text not null default '', material_consultado text not null default '',
  created_by uuid references auth.users(id), created_at timestamptz not null default now(),
  constraint visita_checkout_after_check check(hora_salida is null or hora_salida >= hora_entrada)
 );
 create index if not exists visitas_fecha_idx on public.visitas(fecha_visita desc);
 create index if not exists visitas_cedula_idx on public.visitas(cedula);
+alter table public.visitas add column if not exists dependencia_administrativa text not null default '';
 create or replace function public.current_app_active() returns boolean language sql stable security definer set search_path='' as $$
  select exists(select 1 from public.profiles p where p.id=(select auth.uid()) and p.active=true);
 $$;
