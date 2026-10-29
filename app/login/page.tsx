@@ -1,0 +1,10 @@
+"use client";
+import { useState, type FormEvent } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createClient } from "../../lib/supabase/client";
+export default function LoginPage() {
+ const router=useRouter(); const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [error,setError]=useState(""); const [loading,setLoading]=useState(false);
+ async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setError("");setLoading(true);try{const supabase=createClient();const {error}=await supabase.auth.signInWithPassword({email:email.trim(),password});if(error)throw error;router.replace("/dashboard");router.refresh();}catch(err){setError(err instanceof Error?err.message:"No se pudo iniciar sesión.");}finally{setLoading(false);}}
+ return <main className="page"><section className="panel login-panel"><Link className="back-link" href="/">← Biblioteca Virtual UNES</Link><div className="eyebrow">ACCESO INSTITUCIONAL</div><h1>Iniciar sesión</h1><p className="intro">Ingresa con la cuenta institucional autorizada por el administrador.</p><form className="form" onSubmit={submit}><label htmlFor="email">Correo electrónico</label><input id="email" type="email" autoComplete="username" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="usuario@unes.edu.ve"/><label htmlFor="password">Contraseña</label><input id="password" type="password" autoComplete="current-password" required value={password} onChange={e=>setPassword(e.target.value)} placeholder="Tu contraseña"/>{error&&<p className="error-message" role="alert">{error}</p>}<button className="primary-button" type="submit" disabled={loading}>{loading?"Validando…":"Entrar al sistema"}</button></form><p className="small-note">¿No tienes cuenta? Solicita acceso al administrador del sistema.</p></section></main>;
+}
