@@ -111,7 +111,7 @@ export default function NuevaVisitaPage(){
  <label>Correo</label><input name="correo" type="email"/>
  <label>Área de consulta *</label><select name="area_consulta" required defaultValue=""><option value="" disabled>Seleccione…</option>{AREAS.map(x=><option key={x}>{x}</option>)}</select>
  <label>Tipo de actividad</label><select name="tipo_actividad" defaultValue=""><option value="">Seleccione…</option>{ACTIVIDADES.map(x=><option key={x}>{x}</option>)}</select>
- <label>Número de máquina</label><input name="numero_maquina"/>
+ <label>Número de máquina</label><select name="numero_maquina" defaultValue=""><option value="">Seleccione una máquina…</option>{Array.from({length:30},(_,i)=>String(i+1)).map(n=><option key={n} value={n}>{n}</option>)}</select>
  <label>Procedencia</label><input name="procedencia"/>
  <label>Atendido por</label><input name="atendido_por"/>
  <label>Material consultado</label><textarea name="material_consultado" rows={3}/>
