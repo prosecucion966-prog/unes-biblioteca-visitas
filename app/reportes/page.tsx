@@ -10,6 +10,7 @@ type Visita = {
   fecha_visita: string;
   nucleo: string | null;
   tipo_visitante: string | null;
+  programa_detalle: string | null;
   area_consulta: string | null;
 };
 
@@ -24,6 +25,7 @@ export default function ReportesPage() {
   const [hasta, setHasta] = useState(todayLocal());
   const [nucleo, setNucleo] = useState("todos");
   const [cedula, setCedula] = useState("");
+  const [programa, setPrograma] = useState("todos");
   const [visitas, setVisitas] = useState<Visita[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -37,13 +39,14 @@ export default function ReportesPage() {
         const { data: { user }, error: authError } = await supabase.auth.getUser();
         if (authError || !user) throw new Error("Tu sesión venció. Inicia sesión nuevamente.");
         let query = supabase.from("visitas")
-          .select("id,cedula,fecha_visita,nucleo,tipo_visitante,area_consulta")
+          .select("id,cedula,fecha_visita,nucleo,tipo_visitante,programa_detalle,area_consulta")
           .gte("fecha_visita", desde)
           .lte("fecha_visita", hasta)
           .order("fecha_visita", { ascending: false })
           .limit(5000);
         if (nucleo !== "todos") query = query.eq("nucleo", nucleo);
         if (cedula.trim()) query = query.ilike("cedula", `%${cedula.trim()}%`);
+        if (programa !== "todos") query = query.eq("programa_detalle", programa);
         const { data, error: queryError } = await query;
         if (queryError) throw queryError;
         if (!cancelled) setVisitas((data ?? []) as Visita[]);
@@ -56,9 +59,10 @@ export default function ReportesPage() {
     if (desde && hasta && desde <= hasta) load();
     else { setLoading(false); setError("La fecha inicial debe ser anterior o igual a la fecha final."); }
     return () => { cancelled = true; };
-  }, [desde, hasta, nucleo, cedula]);
+  }, [desde, hasta, nucleo, cedula, programa]);
 
   const nucleos = useMemo(() => Array.from(new Set(visitas.map(v => v.nucleo?.trim() || "Sin núcleo"))).sort((a,b) => a.localeCompare(b, "es")), [visitas]);
+  const programas = useMemo(() => Array.from(new Set(visitas.map(v => v.programa_detalle?.trim()).filter((v): v is string => !!v))).sort((a,b) => a.localeCompare(b, "es")), [visitas]);
   const porNucleo = useMemo(() => {
     const map = new Map<string, number>();
     visitas.forEach(v => { const key = v.nucleo?.trim() || "Sin núcleo"; map.set(key, (map.get(key) ?? 0) + 1); });
@@ -86,6 +90,7 @@ export default function ReportesPage() {
         <div><label htmlFor="hasta">Hasta</label><input id="hasta" type="date" value={hasta} min={desde} max={todayLocal()} onChange={e=>setHasta(e.target.value)} /></div>
         <div><label htmlFor="nucleo">Núcleo</label><select id="nucleo" value={nucleo} onChange={e=>setNucleo(e.target.value)}><option value="todos">Todos los núcleos</option>{nucleos.map(n=><option key={n} value={n}>{n}</option>)}</select></div>
         <div><label htmlFor="cedula">Buscar por cédula</label><input id="cedula" type="search" inputMode="numeric" placeholder="Ingrese la cédula" value={cedula} onChange={e=>setCedula(e.target.value)} /></div>
+        <div><label htmlFor="programa">Programa</label><select id="programa" value={programa} onChange={e=>setPrograma(e.target.value)}><option value="todos">Todos los programas</option>{programas.map(p=><option key={p} value={p}>{p}</option>)}</select></div>
       </div>
       <div className="home-actions"><button className="primary-button" onClick={exportarCSV} disabled={loading || !!error}>Exportar CSV</button><button className="secondary-button" onClick={()=>window.print()}>Imprimir / Guardar PDF</button></div>
     </section>
