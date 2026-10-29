@@ -6,6 +6,7 @@ import { createClient } from "../../lib/supabase/client";
 
 type Visita = {
   id: number;
+  cedula: string | null;
   fecha_visita: string;
   nucleo: string | null;
   tipo_visitante: string | null;
@@ -22,6 +23,7 @@ export default function ReportesPage() {
   const [desde, setDesde] = useState(todayLocal().slice(0, 4) + "-01-01");
   const [hasta, setHasta] = useState(todayLocal());
   const [nucleo, setNucleo] = useState("todos");
+  const [cedula, setCedula] = useState("");
   const [visitas, setVisitas] = useState<Visita[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -35,12 +37,13 @@ export default function ReportesPage() {
         const { data: { user }, error: authError } = await supabase.auth.getUser();
         if (authError || !user) throw new Error("Tu sesión venció. Inicia sesión nuevamente.");
         let query = supabase.from("visitas")
-          .select("id,fecha_visita,nucleo,tipo_visitante,area_consulta")
+          .select("id,cedula,fecha_visita,nucleo,tipo_visitante,area_consulta")
           .gte("fecha_visita", desde)
           .lte("fecha_visita", hasta)
           .order("fecha_visita", { ascending: false })
           .limit(5000);
         if (nucleo !== "todos") query = query.eq("nucleo", nucleo);
+        if (cedula.trim()) query = query.ilike("cedula", `%${cedula.trim()}%`);
         const { data, error: queryError } = await query;
         if (queryError) throw queryError;
         if (!cancelled) setVisitas((data ?? []) as Visita[]);
@@ -53,7 +56,7 @@ export default function ReportesPage() {
     if (desde && hasta && desde <= hasta) load();
     else { setLoading(false); setError("La fecha inicial debe ser anterior o igual a la fecha final."); }
     return () => { cancelled = true; };
-  }, [desde, hasta, nucleo]);
+  }, [desde, hasta, nucleo, cedula]);
 
   const nucleos = useMemo(() => Array.from(new Set(visitas.map(v => v.nucleo?.trim() || "Sin núcleo"))).sort((a,b) => a.localeCompare(b, "es")), [visitas]);
   const porNucleo = useMemo(() => {
@@ -82,6 +85,7 @@ export default function ReportesPage() {
         <div><label htmlFor="desde">Desde</label><input id="desde" type="date" value={desde} max={hasta} onChange={e=>setDesde(e.target.value)} /></div>
         <div><label htmlFor="hasta">Hasta</label><input id="hasta" type="date" value={hasta} min={desde} max={todayLocal()} onChange={e=>setHasta(e.target.value)} /></div>
         <div><label htmlFor="nucleo">Núcleo</label><select id="nucleo" value={nucleo} onChange={e=>setNucleo(e.target.value)}><option value="todos">Todos los núcleos</option>{nucleos.map(n=><option key={n} value={n}>{n}</option>)}</select></div>
+        <div><label htmlFor="cedula">Buscar por cédula</label><input id="cedula" type="search" inputMode="numeric" placeholder="Ingrese la cédula" value={cedula} onChange={e=>setCedula(e.target.value)} /></div>
       </div>
       <div className="home-actions"><button className="primary-button" onClick={exportarCSV} disabled={loading || !!error}>Exportar CSV</button><button className="secondary-button" onClick={()=>window.print()}>Imprimir / Guardar PDF</button></div>
     </section>
