@@ -32,3 +32,73 @@ footer { border-top: 1px solid #e2e8f0; margin-top: 38px; padding-top: 20px; col
 .report-filters input,.report-filters select{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:12px;font:inherit;background:#fff;color:#172033}
 table tfoot th{background:#f0fdfa}
 @media print{body{background:#fff}.dashboard{max-width:none;padding:0}.dashboard-header .home-actions,.dashboard-header form,.report-filters,.home-actions,.secondary-button,.primary-button{display:none!important}.table-panel,.stat-card{break-inside:avoid;box-shadow:none}.table-panel{border:1px solid #ddd}}
+
+/* Diseño adaptable para móvil, tableta y escritorio */
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{overflow-wrap:anywhere}
+img,svg,video{max-width:100%}
+button,input,select,textarea{font:inherit}
+button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+a:focus-visible,button:focus-visible{outline:3px solid #60a5fa;outline-offset:3px}
+.dashboard{width:100%;min-width:0}
+.dashboard-header>*{min-width:0}
+.dashboard-header .brand-with-logo{flex-wrap:wrap}
+.table-panel{min-width:0}
+.table-scroll{max-width:100%;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+table{min-width:600px}
+.form input,.form select,.form textarea,.report-filters input,.report-filters select{min-height:46px;max-width:100%}
+.primary-button,.secondary-button{min-height:44px;white-space:normal}
+.action-card{min-width:0;overflow-wrap:anywhere}
+.report-filters>div{min-width:0}
+.report-filters input,.report-filters select{display:block}
+@media(min-width:1200px){
+ .dashboard{padding:36px 32px 72px}
+ .action-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .table-panel{padding:26px}
+}
+@media(max-width:800px){
+ .dashboard{padding:20px 16px 44px}
+ .dashboard-header{flex-wrap:wrap;align-items:center}
+ .dashboard-header>div{flex:1 1 240px}
+ .dashboard-header .home-actions{width:100%;margin-top:4px}
+ .welcome{padding:20px 0 8px}
+ .stats{gap:12px}
+ .stat-card,.action-card,.table-panel{padding:18px}
+ .action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .intro{font-size:1rem;line-height:1.6}
+}
+@media(max-width:520px){
+ .page{padding:14px 10px;place-items:start center}
+ .panel{border-radius:14px;padding:22px 16px;box-shadow:0 8px 24px rgba(15,23,42,.06)}
+ h1{font-size:clamp(1.8rem,8vw,2.4rem);line-height:1.12}
+ .eyebrow{margin-top:30px;letter-spacing:.1em}
+ .dashboard{padding:14px 10px 32px}
+ .dashboard-header{gap:12px;padding-bottom:16px}
+ .dashboard-header .brand-with-logo{gap:8px}
+ .unes-logo{max-width:min(100%,190px);max-height:64px}
+ .dashboard-header .secondary-button,.dashboard-header .primary-button{width:100%}
+ .welcome h1{font-size:1.9rem}
+ .stats{grid-template-columns:1fr}
+ .stat-card{padding:16px}
+ .stat-card strong{font-size:1.9rem}
+ .action-grid{grid-template-columns:1fr;gap:10px}
+ .action-card{padding:16px}
+ .table-panel{padding:14px;border-radius:12px}
+ .table-panel h2{font-size:1.1rem;line-height:1.35}
+ .table-scroll table{font-size:.84rem}
+ th,td{padding:10px 8px}
+ .home-actions{align-items:stretch;flex-direction:column;gap:10px}
+ .home-actions>*{width:100%;text-align:center}
+ .form{gap:8px;margin-top:20px}
+ .form input,.form select,.form textarea{padding:12px;font-size:16px}
+ .primary-button,.secondary-button{padding:12px 14px}
+ .brand-with-logo{align-items:flex-start;flex-direction:column}
+ .notice{padding:14px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media print{
+ .dashboard{padding:0 10px}
+ .table-scroll{overflow:visible}
+ table{min-width:0;font-size:10pt}
+ th,td{white-space:normal}
+}
