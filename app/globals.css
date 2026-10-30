@@ -221,3 +221,31 @@ tr:hover td{background:#f8fbfd}
 .cedula-search-row input{min-width:0}
 .cedula-search-row button{min-width:100px}
 @media(max-width:420px){.cedula-search-row{grid-template-columns:minmax(0,1fr)}.cedula-search-row button{width:100%}}
+
+
+/* Dashboard administrativo visual y adaptable */
+.dashboard-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+.stat-card small{display:block;margin-top:8px;color:#71839a;font-size:.82rem}
+.dashboard-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 22px}
+.chart-panel{min-width:0;overflow:hidden}
+.chart-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:20px}
+.chart-heading h2{margin:5px 0 0;font-size:1.15rem}
+.chart-kicker{font-size:.7rem;letter-spacing:.12em;font-weight:800;color:#55708f}
+.chart-total{font-size:.84rem;font-weight:800;color:#0b3f78;background:#eef4fb;border-radius:999px;padding:8px 11px;white-space:nowrap}
+.daily-chart{height:220px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;align-items:end;padding-top:8px}
+.daily-column{height:100%;display:flex;min-width:0;flex-direction:column;align-items:center;justify-content:flex-end;gap:7px}
+.daily-column strong{font-size:.8rem;color:#0b3f78}
+.daily-column>span{font-size:.76rem;color:#64748b;text-transform:capitalize}
+.daily-track{width:min(100%,34px);height:150px;background:#edf2f8;border-radius:8px 8px 4px 4px;display:flex;align-items:flex-end;overflow:hidden}
+.daily-bar{width:100%;min-height:3px;border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,#f5c431,#dba900);transition:height .3s ease}
+.horizontal-chart{display:grid;gap:17px}
+.bar-row{min-width:0}
+.bar-label{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:7px;font-size:.86rem}
+.bar-label span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#435975}
+.bar-label strong{color:#062a56;font-variant-numeric:tabular-nums}
+.bar-track{height:9px;border-radius:99px;background:#edf2f8;overflow:hidden}
+.bar-fill{height:100%;min-width:3px;border-radius:99px;background:linear-gradient(90deg,#f5c431,#dba900)}
+.bar-fill-blue{background:linear-gradient(90deg,#0b3f78,#3986ca)}
+.dashboard-footnote{font-size:.8rem;color:#71839a;margin:14px 0 0}
+@media(max-width:900px){.dashboard-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-charts{grid-template-columns:1fr}}
+@media(max-width:520px){.dashboard-kpis{grid-template-columns:1fr}.daily-chart{gap:5px;height:190px}.daily-track{height:125px;width:min(100%,28px)}.chart-panel{padding:15px}.chart-heading h2{font-size:1.05rem}.chart-total{font-size:.75rem;padding:7px 9px}}
